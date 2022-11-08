@@ -1,0 +1,19 @@
+{
+    "SettingContent":[
+        {
+            "title":"Profile Details",
+            "name":"Profile Details",
+            "icon":"person"        
+        },
+        {
+            "title":"Language",
+            "name":"Language",
+            "icon":"language"
+        },
+        {
+            "title":"Log Out",
+            "name":"Log Out",
+            "icon":"power"
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "BottomNavigator":[
+        {
+            "title":"HomeScreen",
+            "name":"Home",
+            "icon":"home",
+            "screen":"HomeScreen",
+            "isSelected":true,
+            "selectedColor":"#f49d34"
+        },
+        {
+            "title":"SettingScreen",
+            "name":"Settings",
+            "icon":"settings-outline",
+            "screen":"SettingScreen",
+            "isSelected":false,
+            "selectedColor":"#f49d34"
+        }
+    ]
+}
