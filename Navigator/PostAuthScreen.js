@@ -9,6 +9,7 @@ import VoterProfileScreen from '../screens/VoterProfileScreen';
 import SettingScreen from '../screens/SettingScreen';
 import SearchVotersScreen from '../screens/SearchVotersScreen';
 import SummaryScreen from '../screens/SummaryScreen';
+import VoterSummary from '../screens/VoterSummary';
 
 const screens = createStackNavigator();
 const bottomNav = createBottomTabNavigator();
@@ -76,6 +77,13 @@ const StackScreen = ({Drawer,bottomNavigatorContent}) => {
                             }} 
                             name='SummaryScreen' 
                             component={SummaryScreen}/>
+            
+            <screens.Screen options={{
+                            title:'VoterSummary',  
+                            headerShown:false
+                            }} 
+                            name='VoterSummary' 
+                            component={VoterSummary}/>
 
              <screens.Screen options={{
                             title:'BottomNavigator',  

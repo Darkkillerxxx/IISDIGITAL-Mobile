@@ -13,24 +13,32 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.ServicesContainer}>
                 <AppTextBold style={styles.ServiceContainerBoldText}>Services Categories</AppTextBold>
                 <View style={styles.ServicesContainerCardContainer}>
-                    <TouchableOpacity onPress={()=>navigation.navigate('SearchVoterScreen')}>
-                        <AppCard style={{...styles.ServicesCardsSummary,...{backgroundColor:'#fa8072'}}}>
-                            <Image source={require('../assets/images/search.png')}/>
-                            <AppText style={styles.ServiceCardsText}>Search</AppText>    
-                        </AppCard>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate('SummaryScreen')}>
-                        <AppCard style={styles.ServicesCardsSummary}>
-                            <Image source={require('../assets/images/summaryIcon.png')}/>
-                            <AppText style={styles.ServiceCardsText}>Summary</AppText>    
-                        </AppCard>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate('VisitScreen')}>
-                        <AppCard style={styles.ServicesCardsVisit}>
-                            <Image source={require('../assets/images/visitIcon.png')}/>
-                            <AppText style={styles.ServiceCardsText}>Visits</AppText>    
-                        </AppCard>
-                    </TouchableOpacity>
+                    <ScrollView horizontal={true}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('SearchVoterScreen')}>
+                            <AppCard style={{...styles.ServicesCardsSummary,...{backgroundColor:'#fa8072'}}}>
+                                <Image source={require('../assets/images/search.png')}/>
+                                <AppText style={styles.ServiceCardsText}>Search</AppText>    
+                            </AppCard>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('VoterSummary')}>
+                            <AppCard style={styles.ServicesCardsVisit}>
+                                <Image source={require('../assets/images/candidates.png')}/>
+                                <AppText style={styles.ServiceCardsText}>Voters Summary</AppText>    
+                            </AppCard>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('SummaryScreen')}>
+                            <AppCard style={styles.ServicesCardsSummary}>
+                                <Image source={require('../assets/images/summaryIcon.png')}/>
+                                <AppText style={styles.ServiceCardsText}>Summary</AppText>    
+                            </AppCard>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('VisitScreen')}>
+                            <AppCard style={styles.ServicesCardsVisit}>
+                                <Image source={require('../assets/images/visitIcon.png')}/>
+                                <AppText style={styles.ServiceCardsText}>Visits</AppText>    
+                            </AppCard>
+                        </TouchableOpacity>
+                    </ScrollView>
                 </View>
             </View>
             <View style={{width:'100%',padding:5,paddingLeft:15}}>
