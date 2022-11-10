@@ -24,55 +24,54 @@ const SummaryPickerData = [
 
 const VoterSummary = ({navigation}) =>{
     const [voterData,setVoterData]=useState(null);
+    const [voterDataForBooths,setVoterDataForBooths] = useState([]);
     const [pickerValue,setPickervalue] = useState('AC Wise Voter Summary');
-
+    const [boothList,setBoothList] = useState([]);
+    const [selectedBooth,setSelectedBooth] = useState(null);
 
     const onSummaryTypeChange = async(id) => {
         let selectedSummaryId = SummaryPickerData.find((summary) => summary.id === id)
         setPickervalue(selectedSummaryId.title)
         switch(id){
             case 1:
-                const getVoterListFromDB = await fetchAllDataFromTable('VoterList');
-                setVoterList([...getVoterListFromDB])
                 break;
             
             case 2:
-                const user = JSON.parse(await AsyncStorage.getItem('userData'));
-                let assignedBooths = []
-                user?.assignedBooths.forEach(booth => {
-                    assignedBooths.push({
-                        id:booth,
-                        title:booth
+                const voterSummaryBooth = await apiCall("post","getVoterSummary",{type:2});
+                if(voterSummaryBooth.status === 200){
+                    const boothList = []
+                    setVoterDataForBooths([...voterSummaryBooth.voterList]);
+                    voterSummaryBooth.voterList.forEach((booth)=>{
+                        boothList.push({id:booth.BOOTH_NO,title:booth.BOOTH_NO});
                     })
-                });
-                //console.log(7575,assignedBooths[0]?.title)
-                setBoothListValue(assignedBooths[0]?.title)
-                setBoothList([...assignedBooths])
-
+                    setBoothList([...boothList]);
+                    if(boothList.length>0){
+                        setSelectedBooth(boothList[0].title);
+                        setVoterSummaryDataForSelectedBooth(voterSummaryBooth.voterList,1);
+                    }
+                }
+                
                 break;
-            
-            case 3:
-                setCasteValue(eCast[0].title);
-                console.log(7373,eCast[0].title)
-                onCastChange(eCast[0].id);
-                break;
-
-            case 4:
-                setMoodValue(votersMood[0].title);
-                onVoterMoodsChange(votersMood[0].id)
-                setVoterMoodList([...votersMood])
-                break;
-
+                
             default:
                 break;
         }
         
     }
+
+    const setVoterSummaryDataForSelectedBooth = (voterList,boothNo) =>{
+        const votersData = voterList.find((voterData)=> voterData.BOOTH_NO === boothNo);
+        setVoterData({...votersData});
+    }
+
+    const onBoothTypeChange = (id)=>{
+        setSelectedBooth(id);
+        setVoterSummaryDataForSelectedBooth(voterDataForBooths,id);
+    }
     
     useFocusEffect(
       
         React.useCallback(() => {
-            //console.log(94)
             async function getUserDetails(){
                 console.log(5757,await AsyncStorage.getItem('userData'))
             }
@@ -80,7 +79,7 @@ const VoterSummary = ({navigation}) =>{
             async function fetchAccountVoterSummary(){
                 const accountVoterSummary = await apiCall("post","getVoterSummary",{type:1});
                 if(accountVoterSummary.status === 200){
-                    setVoterData(accountVoterSummary.voterList);
+                    setVoterData(accountVoterSummary.voterList[0]);
                 }
             }
 
@@ -92,17 +91,17 @@ const VoterSummary = ({navigation}) =>{
     return(
         <AppContainer style={styles.AppContainer}>
              <AppPicker onSelectData={onSummaryTypeChange} value={pickerValue} style={{width:'100%'}} data={SummaryPickerData}/>
-             {/* {pickerValue === 'AC Wise Summary' ? 
+             {pickerValue === 'AC Wise Summary' ? 
              null
             :pickerValue === 'Booth Wise Summary' && boothList.length > 0 ?
             <View style={{width:'100%',marginTop:20}}>  
-                <AppText>Select Booth No.</AppText>
-                <AppPicker onSelectData={onBoothTypeChange} value={boothListValue} style={{width:'100%'}} data={boothList}/>
+                <AppText style={{marginLeft:10}}>Select Booth No.</AppText>
+                <AppPicker onSelectData={onBoothTypeChange} value={selectedBooth} style={{width:'100%'}} data={boothList}/>
             </View>:
-            null}*/}
+            null}
             {
             voterData ? 
-                <VoterSummaryComponent voterList={voterData} />
+                <VoterSummaryComponent navigation={navigation} boothNo={selectedBooth} voterList={voterData} />
             :null}
             
         </AppContainer>

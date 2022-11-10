@@ -10,6 +10,7 @@ import SettingScreen from '../screens/SettingScreen';
 import SearchVotersScreen from '../screens/SearchVotersScreen';
 import SummaryScreen from '../screens/SummaryScreen';
 import VoterSummary from '../screens/VoterSummary';
+import VoterList from '../screens/VoterList';
 
 const screens = createStackNavigator();
 const bottomNav = createBottomTabNavigator();
@@ -84,6 +85,13 @@ const StackScreen = ({Drawer,bottomNavigatorContent}) => {
                             }} 
                             name='VoterSummary' 
                             component={VoterSummary}/>
+
+            <screens.Screen options={{
+                            title:'VotersList',  
+                            headerShown:false
+                            }} 
+                            name='VotersList' 
+                            component={VoterList}/>
 
              <screens.Screen options={{
                             title:'BottomNavigator',  

@@ -5,7 +5,7 @@ import AppTextBold from './AppTextBold';
 import AppText from './AppText';
 import PieChart from 'react-native-pie-chart';
 
-const VoterSummaryPieChart = ({label,totalVoters,totalVoted,navigation}) =>{
+const VoterSummaryPieChart = ({label,totalVoters,totalVoted,boothNo,sex,navigation}) =>{
     const widthAndHeight = 100
     const series = [123, 321, 123, 789, 537]
     const sliceColor = ['#ffc4bd','#ff6961'];
@@ -25,7 +25,7 @@ const VoterSummaryPieChart = ({label,totalVoters,totalVoted,navigation}) =>{
                 />
 
                 <View style={{width:'100%',justifyContent:'space-around',marginTop:25,flexDirection:'row'}}>
-                    <TouchableOpacity onPress={()=>navigation.navigate('SearchVoterScreen',{voters:JSON.stringify(maleVoters)})} style={{width:'30%',flexDirection:'row',justifyContent:'center'}}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:true,sex:sex}})} style={{width:'30%',flexDirection:'row',justifyContent:'center'}}>
                         <View style={{width:35,height:35,backgroundColor:'#ffc4bd'}} />
                         <View style={{marginLeft:10}}>
                             <AppText>Voted</AppText>
@@ -33,7 +33,7 @@ const VoterSummaryPieChart = ({label,totalVoters,totalVoted,navigation}) =>{
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=>navigation.navigate('SearchVoterScreen',{voters:JSON.stringify(femaleVoters)})} style={{width:'30%',flexDirection:'row'}}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:false,sex:sex}})} style={{width:'30%',flexDirection:'row'}}>
                         <View style={{width:35,height:35,backgroundColor:'#ff6961'}} />
                         <View style={{marginLeft:10}}>
                             <AppText>Not Voted</AppText>
