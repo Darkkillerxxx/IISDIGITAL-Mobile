@@ -12,7 +12,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "iisdigitalmobile";
+    return "લોક સંપર્ક";
   }
 
   /**

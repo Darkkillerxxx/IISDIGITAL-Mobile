@@ -96,7 +96,10 @@ const VoterSummary = ({navigation}) =>{
             :pickerValue === 'Booth Wise Summary' && boothList.length > 0 ?
             <View style={{width:'100%',marginTop:20}}>  
                 <AppText style={{marginLeft:10}}>Select Booth No.</AppText>
-                <AppPicker onSelectData={onBoothTypeChange} value={selectedBooth} style={{width:'100%'}} data={boothList}/>
+                {selectedBooth ? 
+                    <AppPicker onSelectData={onBoothTypeChange} value={selectedBooth} style={{width:'100%'}} data={boothList}/>
+                :
+                null}
             </View>:
             null}
             {

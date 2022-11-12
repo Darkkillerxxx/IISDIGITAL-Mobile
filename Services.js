@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from "axios"
 import {ToastAndroid} from 'react-native'
-// const BASE_URL = 'http://103.116.176.242:3001/'
-const BASE_URL = 'http://192.168.1.20:3001/'
+const BASE_URL = 'http://103.116.176.242:3001/'
+// const BASE_URL = 'http://192.168.1.20:3001/'
 // import sqlite from 'react-native-sqlite-storage';
 import Realm from "realm";
 let realm;
