@@ -34,6 +34,7 @@ const VoterSummary = ({navigation}) =>{
         setPickervalue(selectedSummaryId.title)
         switch(id){
             case 1:
+                setSelectedBooth(null);
                 break;
             
             case 2:

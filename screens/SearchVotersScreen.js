@@ -5,7 +5,7 @@ import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
 import AppPicker from '../components/AppPicker';
 import { useFocusEffect } from '@react-navigation/native';
-import { fetchAllDataFromTable } from '../Services';
+import { apiCall, fetchAllDataFromTable } from '../Services';
 import VoterCard from '../components/VoterCard';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo"; 
@@ -44,7 +44,7 @@ const SearchVotersScreen = ({navigation,route}) =>{
     const [firstNameSearchText,setFirstNameSearchText] = useState('')
     const [middleNameSearchText,setMiddleNameSearchText] = useState('')
     const [lastNameSearchText,setLastNameSearchText] = useState('')
-    const [searchText,setSearchText] = useState('')
+    const [searchText,setSearchText] = useState('');
 
     const onPickerTypeChange = (searchTypeId) =>{
         const selectedType =  AppPickerData.find((data) => data.id === searchTypeId)
@@ -63,7 +63,7 @@ const SearchVotersScreen = ({navigation,route}) =>{
         React.useCallback(() => {
             
             async function setUserDetails(){
-                const userDetails = JSON.parse(await AsyncStorage.getItem('userData')) 
+                const userDetails = JSON.parse(await AsyncStorage.getItem('userData')); 
                 setBoothList([...userDetails?.assignedBooths.map((booth)=> {
                     return {
                         id:booth,
@@ -74,16 +74,30 @@ const SearchVotersScreen = ({navigation,route}) =>{
             }
 
             async function fetchVoterList(){
-                const getVoterListFromDB = await fetchAllDataFromTable('VoterList');
+                // const getVoterListFromDB = await fetchAllDataFromTable('VoterList');
+                setIsLoading(true);
+                const societyListFromStorage = JSON.parse(await AsyncStorage.getItem('societyList'));
+                const voterListPayloadArr = [];
+
+                societyListFromStorage?.forEach((society) => {
+                    voterListPayloadArr.push({
+                        acNo:society.AC_NO,
+                        stCode:society.ST_CODE,
+                        boothNo:society.BOOTH_NO,
+                        vibhagNo:society.VIBHAG_NO
+                    })
+                })
+                let votersListResponse = await apiCall('post','getVoterList',{values:voterListPayloadArr});
                 let votersPassedFromRoute = JSON.parse(route.params? route.params.voters : null )
-                console.log(79,votersPassedFromRoute,votersPassedFromRoute?.length > 0)
+                
                 if(votersPassedFromRoute && votersPassedFromRoute.length > 0){
                     setVotersToBeDisplayed([...votersPassedFromRoute])
                     setVoterList([...votersPassedFromRoute])
                 }else{
-                    setVotersToBeDisplayed([...getVoterListFromDB])
-                    setVoterList([...getVoterListFromDB])
+                    setVotersToBeDisplayed([...votersListResponse.voterList])
+                    setVoterList([...votersListResponse.voterList])
                 }
+                setIsLoading(false);
             }
 
             async function syncUnsyncedVoters(){ 
@@ -125,17 +139,17 @@ const SearchVotersScreen = ({navigation,route}) =>{
         console.log('true',selectedType)
         switch(selectedType.id){
             case 1:
-                voterListToBeDisplayed = voterLists.filter((voter)=> voter.ENG_F_NAME?.toLowerCase().includes(firstNameSearchText.toLowerCase()) &&
-                                                                     voter.ENG_M_NAME?.toLowerCase().includes(middleNameSearchText.toLowerCase()) && 
-                                                                     voter.ENG_SURNAME?.toLowerCase().includes(lastNameSearchText.toLowerCase()))
+                voterListToBeDisplayed = voterLists.filter((voter)=> voter.ENG_F_NAME?.toLowerCase().includes(firstNameSearchText.trim().toLowerCase()) &&
+                                                                     voter.ENG_M_NAME?.toLowerCase().includes(middleNameSearchText.trim().toLowerCase()) && 
+                                                                     voter.ENG_SURNAME?.toLowerCase().includes(lastNameSearchText.trim().toLowerCase()))
                 setVotersToBeDisplayed([...voterListToBeDisplayed])
                 break;
             case 2:
                 voterListToBeDisplayed = voterLists.filter((voter)=> {
                     return parseInt(voter.BOOTH_NO) === parseInt(selectedBooth) &&
-                    voter.ENG_F_NAME?.toLowerCase().includes(firstNameSearchText.toLowerCase()) &&
-                    voter.ENG_M_NAME?.toLowerCase().includes(middleNameSearchText.toLowerCase()) && 
-                    voter.ENG_SURNAME?.toLowerCase().includes(lastNameSearchText.toLowerCase()) 
+                    voter.ENG_F_NAME?.toLowerCase().includes(firstNameSearchText.trim().toLowerCase()) &&
+                    voter.ENG_M_NAME?.toLowerCase().includes(middleNameSearchText.trim().toLowerCase()) && 
+                    voter.ENG_SURNAME?.toLowerCase().includes(lastNameSearchText.trim().toLowerCase()) 
                 })
         
                 setVotersToBeDisplayed([...voterListToBeDisplayed])
@@ -319,6 +333,12 @@ const styles = StyleSheet.create({
         marginLeft:5,
         backgroundColor:'#f49d34',
         width:'15%'
+    },
+    VisitContainer:{
+        flex:1,
+        width:'100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })
 

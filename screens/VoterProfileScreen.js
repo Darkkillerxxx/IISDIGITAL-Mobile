@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import {StyleSheet,View,Image,ScrollView,ActivityIndicator,FlatList,Modal,TouchableOpacity,ToastAndroid,Alert} from 'react-native'
+import {StyleSheet,View,Image,ScrollView,ActivityIndicator,FlatList,Modal,TouchableOpacity,ToastAndroid,Alert,Linking} from 'react-native'
 import NetInfo from "@react-native-community/netinfo"; 
 import AppButton from "../components/AppButton";
 import AppContainer from '../components/AppContainer'
@@ -32,10 +32,12 @@ const VoterProfileScreen = ({route,navigation}) =>{
     const [showSearchablePicker,setShowSearchablePicker] = useState(false);
     const [isLoading,setIsLoading] = useState(false)
     const [showSharePreview,setShowSharePreview] = useState(false)
+    const [isVoted,setIsVoted] = useState(false);
 
     useEffect(()=>{
         let profileDetails = JSON.parse(route.params.voter); 
-        setProfileDetails({...profileDetails}) 
+        setProfileDetails({...profileDetails});
+        setIsVoted(profileDetails.VOTED); 
         console.log(31,profileDetails);
     },[])
 
@@ -130,7 +132,7 @@ const VoterProfileScreen = ({route,navigation}) =>{
             profileDetails.ePhoto = profileDetails.ePhoto === 'null' || profileDetails.ePhoto === null ? '' :profileDetails.ePhoto;
             profileDetails.RATION_CARD = profileDetails.RATION_CARD === 'null' || profileDetails.RATION_CARD === null ? 0 :profileDetails.RATION_CARD;
             profileDetails.isDEATH = profileDetails.isDEATH === 'null' || profileDetails.isDEATH === null ? false : profileDetails.isDEATH;
-            
+            profileDetails.VOTED = profileDetails.VOTED === 'null' || profileDetails.VOTED === null ? false : profileDetails.VOTED;
     
             if(index >= 0){
                 unSyncedVoters[index] = profileDetails
@@ -192,6 +194,24 @@ const VoterProfileScreen = ({route,navigation}) =>{
         const profileDetailsForResettingPic = profileDetails;
         profileDetailsForResettingPic.ePhoto = null;
         setProfileDetails({...profileDetailsForResettingPic})
+    }
+
+    const onSetVotedOrNonVoted = () =>{
+         Alert.alert(
+            "Vote/Unvoted",
+            `Mark this user as ${isVoted ? "Not Voted":"Voted"}`,
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel"
+        },
+        { text: "Yes", onPress: () => {
+            setIsVoted(!isVoted);
+            changeProfileDetailsValue("VOTED",isVoted ? false:true);
+        }}
+      ]
+    );
     }
 
     const onPictureEditClick = () =>{
@@ -315,9 +335,9 @@ const VoterProfileScreen = ({route,navigation}) =>{
                             <AppButton 
                                 iconColor='white' 
                                 iconSize={24} 
-                                icon='chatbox-ellipses-outline'
+                                icon='ios-call'
                                 textStyle={{fontSize:16,marginLeft:-15}}
-                                onPressButton={()=>{}}
+                                onPressButton={()=>Linking.openURL(`tel:${profileDetails?.CONTACTNO ? profileDetails?.CONTACTNO : null}`)}
                                 buttonStyle={{backgroundColor:'#1890ff',width:50,height:40,marginLeft:10}} />
                         </View>
                 
@@ -328,6 +348,17 @@ const VoterProfileScreen = ({route,navigation}) =>{
                                 text="Link Family" 
                                 textStyle={{fontSize:16}}
                                 onPressButton={()=>setShowFamilyLinkModal(true)}
+                                buttonStyle={{marginTop:10,backgroundColor:'#16d39a',width:125,height:35}}  />
+                        </View>
+
+                        
+                        <View style={{width:'100%',justifyContent:'flex-end',alignItems:'center',flexDirection:'row'}}>
+                            <AppButton 
+                                iconColor='white' 
+                                iconSize={20} 
+                                text="Mark as Voted" 
+                                textStyle={{fontSize:14}}
+                                onPressButton={()=>onSetVotedOrNonVoted()}
                                 buttonStyle={{marginTop:10,backgroundColor:'#16d39a',width:125,height:35}}  />
                         </View>
 

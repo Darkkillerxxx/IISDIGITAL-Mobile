@@ -21,7 +21,7 @@ const VoterCard = ({item,index,onVoterCardPress}) => {
                                 </View>
                                 <View style={{...styles.AppCardRowDivision,width:'25%'}}>
                                     <AppText style={styles.AppCardRowDivisionAppText}>Booth No.</AppText>
-                                    <AppTextBold style={styles.AppCardRowDivisionAppBoldText}>{item?.SL_NO}</AppTextBold>
+                                    <AppTextBold style={styles.AppCardRowDivisionAppBoldText}>{item?.BOOTH_NO}</AppTextBold>
                                 </View>
                             </View>
                             <View style={styles.AppCardRow}>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         width:'100%',
         backgroundColor:'white',
         borderRadius:5,
-        height:85,
+        height:95,
         padding:5,
         marginVertical:5,
         flexDirection:'row',

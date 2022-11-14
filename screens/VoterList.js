@@ -32,7 +32,7 @@ const VoterList = ({route}) =>{
         return result;
     }
 
-    const exportDataToExcel = () => {
+    const exportDataToExcel = async() => {
 
         // Created Sample data
         let sample_data_to_export = [{id: '1', name: 'First User'},{ id: '2', name: 'Second User'}];
@@ -51,8 +51,14 @@ const VoterList = ({route}) =>{
         XLSX.utils.book_append_sheet(wb,ws,"Users")
         const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
 
-        RNFS.writeFile(RNFS.DownloadDirectoryPath + `/my_exported_file.${makeid(5)}.xlsx`, wbout, 'ascii').then((r)=>{
-            console.log(RNFS.DownloadDirectoryPath + `/my_exported_file.${makeid(5)}.xlsx`,r);
+        if (!await RNFS.exists(RNFS.DownloadDirectoryPath + `/EMS`)){
+            console.log(55,RNFS.DownloadDirectoryPath + `/EMS`);
+            await RNFS.mkdir(RNFS.DownloadDirectoryPath + `/EMS`);
+        }
+        
+
+        RNFS.writeFile(RNFS.DownloadDirectoryPath + `/EMS/my_exported_file.${makeid(5)}.xlsx`, wbout, 'ascii').then((r)=>{
+            console.log(RNFS.DownloadDirectoryPath + `/EMS/my_exported_file.${makeid(5)}.xlsx`,r);
             ToastAndroid.show("File Stored in Downloads Folder"+RNFS.DownloadDirectoryPath + `/my_exported_file.${makeid(5)}.xlsx`, ToastAndroid.LONG);
             console.log('Success');
         }).catch((e)=>{

@@ -9,6 +9,7 @@ const VoterSummaryPieChart = ({label,totalVoters,totalVoted,boothNo,sex,navigati
     const widthAndHeight = 100
     const series = [123, 321, 123, 789, 537]
     const sliceColor = ['#ffc4bd','#ff6961'];
+   
     return(
             <>
             <View style={{marginTop:25,width:'100%',height:350,justifyContent:'center',alignItems:'center',elevation:3,borderWidth:1,padding:10}}>
@@ -25,7 +26,11 @@ const VoterSummaryPieChart = ({label,totalVoters,totalVoted,boothNo,sex,navigati
                 />
 
                 <View style={{width:'100%',justifyContent:'space-around',marginTop:25,flexDirection:'row'}}>
-                    <TouchableOpacity onPress={()=>navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:true,sex:sex}})} style={{width:'30%',flexDirection:'row',justifyContent:'center'}}>
+                    <TouchableOpacity onPress={()=>{
+                        if(boothNo){
+                            navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:true,sex:sex}})
+                        }
+                    }} style={{width:'30%',flexDirection:'row',justifyContent:'center'}}>
                         <View style={{width:35,height:35,backgroundColor:'#ffc4bd'}} />
                         <View style={{marginLeft:10}}>
                             <AppText>Voted</AppText>
@@ -33,7 +38,11 @@ const VoterSummaryPieChart = ({label,totalVoters,totalVoted,boothNo,sex,navigati
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=>navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:false,sex:sex}})} style={{width:'30%',flexDirection:'row'}}>
+                    <TouchableOpacity onPress={()=>{
+                        if(boothNo){
+                            navigation.navigate('VotersList',{apiBody:{boothNo:boothNo,isVoted:false,sex:sex}})
+                        }
+                    }} style={{width:'30%',flexDirection:'row'}}>
                         <View style={{width:35,height:35,backgroundColor:'#ff6961'}} />
                         <View style={{marginLeft:10}}>
                             <AppText>Not Voted</AppText>
