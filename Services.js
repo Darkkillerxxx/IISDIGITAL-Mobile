@@ -85,8 +85,8 @@ export const checkToken = async() => {
 }
 
 export const apiCall = async(type,endpoint,body)=>{
-    console.log(BASE_URL + endpoint)
-    console.log(await AsyncStorage.getItem('authToken'))
+    console.log(BASE_URL + endpoint);
+    console.log(body);
     let response = await axios({
         method: type,
         url: BASE_URL + endpoint,

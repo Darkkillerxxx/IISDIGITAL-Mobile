@@ -18,7 +18,18 @@ const ShareImagePreview = ({voterDetails,onCancelClicked}) =>{
             reff.current.capture().then((uri)=>{
                 const shareOptions = {
                     title: 'Share via',
-                    message: 'some message',
+                    message: `
+candidate name : ${'test name'}
+party_name:${'Test Party'}
+Symbol:${'Test Symbol'} 
+
+--------------Voter Details--------------------------------
+
+name:${voterDetails.ENG_F_NAME} ${voterDetails.ENG_M_NAME} ${voterDetails.ENG_SURNAME}
+srno:${voterDetails.SL_NO}
+vcardId:${''}
+house no:${voterDetails.HOUSE_NO}
+booth Address:${'Test Address'}`,
                     url: uri,
                     social: Share.Social.WHATSAPP,
                     whatsAppNumber: `91${voterDetails.CONTACTNO}`,  // country code + phone number

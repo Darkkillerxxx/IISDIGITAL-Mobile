@@ -44,11 +44,11 @@ const VoterProfileScreen = ({route,navigation}) =>{
     const changeProfileDetailsValue = (key,value) =>{
         console.log(key,value)
         let profileData = profileDetails;
-
         profileData[key] = value;
-
-        console.log(profileData);
         setProfileDetails({...profileData})
+        if(key === 'VOTED'){
+            onSaveDetails();   
+        }
     }
 
     const onDateChange = (key,event,date) =>{
@@ -356,10 +356,10 @@ const VoterProfileScreen = ({route,navigation}) =>{
                             <AppButton 
                                 iconColor='white' 
                                 iconSize={20} 
-                                text="Mark as Voted" 
+                                text={`Mark as ${isVoted ? "Not Voted":"Voted"}`} 
                                 textStyle={{fontSize:14}}
                                 onPressButton={()=>onSetVotedOrNonVoted()}
-                                buttonStyle={{marginTop:10,backgroundColor:'#16d39a',width:125,height:35}}  />
+                                buttonStyle={{marginTop:10,backgroundColor:'#16d39a',width:150,height:35}}  />
                         </View>
 
                         <View style={styles.UserInfoCollapsibleCards}>

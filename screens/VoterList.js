@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,StyleSheet,Text,FlatList, PermissionsAndroid,ToastAndroid} from 'react-native';
+import {View,StyleSheet,Text,FlatList, PermissionsAndroid,ToastAndroid,ActivityIndicator} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { apiCall } from '../Services';
 import VoterCard from '../components/VoterCard';
@@ -9,14 +9,30 @@ import XLSX from 'xlsx'
 
 const VoterList = ({route}) =>{
     const [voterList,setVoterList] = useState([]);
-    
+    const [isLoading,setIsLoading] = useState(false);
+
     useFocusEffect(
         React.useCallback(() => {
             async function fetchVoterList(){
-                const voters = await apiCall("post","getVoterListAccToBooths",{...route.params.apiBody});
-                if(voters.status = 200){
-                    setVoterList([...voters.voterList]);
+                try{
+                    setIsLoading(true);
+                    const voters = await apiCall("post","getVoterListAccToBooths",{...route.params.apiBody});
+                    if(voters.status = 200){
+                        setVoterList([...voters.voterList]);
+                        setIsLoading(false);
+                    }
+                else{
+                        ToastAndroid.showWithGravityAndOffset("Something went Wrong While Fetching Voters",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
+                        console.log();
+                        setIsLoading(false);
+                    }
                 }
+                catch(e){
+                    ToastAndroid.showWithGravityAndOffset(e.getMessage(),ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50);
+                    console.log(e);
+                    setIsLoading(false);
+                }
+                
             }
             fetchVoterList();
         }, [])
@@ -104,15 +120,20 @@ const VoterList = ({route}) =>{
                     buttonStyle={{borderRadius:5,marginBottom:15,backgroundColor:'#ff6961',width:150,height:35,marginRight:10}}/>
             </View>
          {
-         voterList && voterList.length > 0 ? 
-            <FlatList 
-                style={{width:'100%'}}
-                data={voterList}
-                renderItem={({ item, index, separators }) => <VoterCard item={item} index ={index} onVoterCardPress={onVoterCardClick}/>}
-                keyExtractor = {(item) => item.IDCARD_NO}/> 
-            : 
-            null
-        }
+         isLoading ? 
+            <View style={{flex: 1,width:'100%',justifyContent: 'center',alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#f49d34"/>
+            </View>
+            :
+            voterList && voterList.length > 0 ? 
+                <FlatList 
+                    style={{width:'100%'}}
+                    data={voterList}
+                    renderItem={({ item, index, separators }) => <VoterCard item={item} index ={index} onVoterCardPress={onVoterCardClick}/>}
+                    keyExtractor = {(item) => item.IDCARD_NO}/> 
+                : 
+                null
+         }
         </View>
         
     );
@@ -121,7 +142,8 @@ const VoterList = ({route}) =>{
 const styles = StyleSheet.create({
     AppContainer:{
         alignItems:'flex-start',
-        padding:10
+        padding:10,
+        flex:1
     },
 })
 
