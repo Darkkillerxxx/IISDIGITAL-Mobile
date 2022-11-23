@@ -83,19 +83,19 @@ const SearchVotersScreen = ({navigation,route}) =>{
                     voterListPayloadArr.push({
                         acNo:society.AC_NO,
                         stCode:society.ST_CODE,
-                        boothNo:society.BOOTH_NO,
-                        vibhagNo:society.VIBHAG_NO
+                        boothNo:society.BOOTH_NO
                     })
                 })
-                let votersListResponse = await apiCall('post','getVoterList',{values:voterListPayloadArr});
+                let votersList = await fetchAllDataFromTable('VoterList');
+                // let votersListResponse = await apiCall('post','getVoterList',{values:voterListPayloadArr});
                 let votersPassedFromRoute = JSON.parse(route.params? route.params.voters : null )
                 
                 if(votersPassedFromRoute && votersPassedFromRoute.length > 0){
                     setVotersToBeDisplayed([...votersPassedFromRoute])
                     setVoterList([...votersPassedFromRoute])
                 }else{
-                    setVotersToBeDisplayed([...votersListResponse.voterList])
-                    setVoterList([...votersListResponse.voterList])
+                    setVotersToBeDisplayed([...votersList])
+                    setVoterList([...votersList])
                 }
                 setIsLoading(false);
             }

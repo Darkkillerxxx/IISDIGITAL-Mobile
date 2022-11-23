@@ -7,7 +7,7 @@ import AppButton from '../components/AppButton';
 var RNFS = require('react-native-fs');
 import XLSX from 'xlsx'
 
-const VoterList = ({route}) =>{
+const VoterList = ({route,navigation}) =>{
     const [voterList,setVoterList] = useState([]);
     const [isLoading,setIsLoading] = useState(false);
 
@@ -53,12 +53,18 @@ const VoterList = ({route}) =>{
         // Created Sample data
         let sample_data_to_export = [{id: '1', name: 'First User'},{ id: '2', name: 'Second User'}];
         const voterDataToBeExported = [];
-
+        console.log(voterList[0]);
         voterList?.forEach((voter)=>{
             voterDataToBeExported.push({
                 FirstName:voter.ENG_F_NAME,
                 MiddleName:voter.ENG_M_NAME,
-                LastName:voter.ENG_SURNAME
+                LastName:voter.ENG_SURNAME,
+                AC_NO:voter.AC_NO,
+                BOOTH_NO:voter.BOOTH_NO,
+                SL_NO:voter.SL_NO,
+                VIBHAG_NO:voter.VIBHAG_NO,
+                VIBHAG_NAME:voter.VIBHAG_NAME,
+                MOBILE_NO:voter.MOBILE_NO
             })
         })
     
@@ -106,7 +112,9 @@ const VoterList = ({route}) =>{
         
     }
 
-    const onVoterCardClick = () => {}
+    const onVoterCardClick = (item) =>{
+        navigation.navigate('VoterProfileScreen',{voter:JSON.stringify(item)})
+    }
 
     return (
         <View style={styles.AppContainer}>

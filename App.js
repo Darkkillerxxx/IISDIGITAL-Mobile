@@ -15,7 +15,9 @@
    Text,
    useColorScheme,
    View,
+   ActivityIndicator
  } from 'react-native';
+ 
  import {apiCall, checkToken, makeDatabaseTransactions} from './Services'
  import SplashScreen from './screens/SplashScreen';
  import LoginForm from './screens/LoginForm';
@@ -27,11 +29,13 @@
  import AsyncStorage from '@react-native-community/async-storage';
  import NetInfo from "@react-native-community/netinfo"; 
  import {AuthContext} from './context/AuthContext'
+import AppText from './components/AppText';
 
  
  const App = () => {
    const [showSplashScreen,setShowSplashScreen] = useState(true)
    const [isLoggedIn,setIsLoggedIn] = useState(false);
+   const [isSyncing,setIsSyncing] = useState(false);
    const [visitScreenFilter,setVisitScreenFilter] = useState({acNo:null,boothNo:null,vibhagNo:null,houseNo:null,search:null});
    useEffect(()=>{
      console.log(77777777,visitScreenFilter)
@@ -40,13 +44,18 @@
        setShowSplashScreen(false);
        setIsLoggedIn(isValidToken);
        if(isValidToken){
-         syncData();
+        NetInfo.fetch().then((state)=>{
+          if(state.isConnected){
+            syncData();
+          }
+        })
        }
      }
      validateToken();
    },[isLoggedIn,visitScreenFilter])
  
    const syncData = async() => {
+    setIsSyncing(true);
     let userData = await AsyncStorage.getItem('userData');
     userData = JSON.parse(userData);
     console.log(48,userData)
@@ -93,8 +102,7 @@
       votersListArr.push({
         acNo:society.AC_NO,
         stCode:society.ST_CODE,
-        boothNo:society.BOOTH_NO,
-        vibhagNo:society.VIBHAG_NO
+        boothNo:society.BOOTH_NO
       })
     })
 
@@ -102,7 +110,6 @@
     /********************************************************
      Fetching Voters List against AccNO,BoothNo,STCODE,VibhagNo
      ********************************************************/
-    // console.log('Calling now',votersListArr)
      let votersListResponse = await apiCall('post','getVoterList',{values:votersListArr});
      
      console.log(103103,votersListResponse.voterList.length)
@@ -110,7 +117,8 @@
       makeDatabaseTransactions('VoterList',votersListResponse.voterList)
       
       console.log('All Set');
-     }     
+     }
+     setIsSyncing(false);     
   }
  
    const onChangeLoginStatus = (status) =>{
@@ -124,8 +132,18 @@
           showSplashScreen ? 
           <SplashScreen/>
           : 
-          isLoggedIn ? 
-            <PostAuthScreen bottomNavigator={bottomNavigator.BottomNavigator}/> 
+          isLoggedIn ?
+            <View style={{width:'100%',flex:1}}>
+              {isSyncing ?
+              <View style={{width:'100%',height:50,justifyContent:'center',alignItems: 'center',flexDirection:'row',backgroundColor:'orange'}}>
+                <ActivityIndicator size="small" color="white" />
+                <AppText style={{marginLeft:15,color:'white'}}>Syncing Data...</AppText>
+              </View>
+              :
+              null}
+              
+              <PostAuthScreen bottomNavigator={bottomNavigator.BottomNavigator}/> 
+            </View> 
           :
             <PreAuthScreen /> 
        }

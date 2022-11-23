@@ -7,7 +7,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 const AppPicker = ({data,style,onSelectData,value}) =>{
-    console.log(101010,value)
     const [selectedVal,setSelectedVal] = useState(value)
     const [isModalVisible,setIsModalVisible] = useState(false)
     
@@ -15,7 +14,6 @@ const AppPicker = ({data,style,onSelectData,value}) =>{
         <>
             <TouchableOpacity onPress={()=>setIsModalVisible(true)} style={{...styles.AppPicker,...style}}>
                       <AppText style={{color:selectedVal === "" ? "grey":'black'}}>
-                          {console.log(18,value)}
                         {selectedVal === "" ? "" : selectedVal}
                       </AppText>            
 

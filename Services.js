@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo"; 
 import axios from "axios"
 import {ToastAndroid} from 'react-native'
 const BASE_URL = 'http://103.116.176.242:3001/'
@@ -75,9 +76,15 @@ export const checkToken = async() => {
     let tokenStoredInAsyncStorage = await AsyncStorage.getItem('authToken');
     console.log(7,tokenStoredInAsyncStorage)
     if(tokenStoredInAsyncStorage){
-        let checkTokenResponse = await apiCall('get','checkUserToken',null)
-        console.log(79,checkTokenResponse)
-        if(checkTokenResponse.status === 200){
+        let netInfo = await NetInfo.fetch();
+        if(netInfo.isConnected){
+            let checkTokenResponse = await apiCall('get','checkUserToken',null)
+            console.log(79,checkTokenResponse)
+            if(checkTokenResponse.status === 200){
+                return true
+            }
+        }
+        else{
             return true
         }
     }

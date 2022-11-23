@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         width:'100%',
         backgroundColor:'white',
         borderRadius:5,
-        height:95,
+        height:105,
         padding:5,
         marginVertical:5,
         flexDirection:'row',

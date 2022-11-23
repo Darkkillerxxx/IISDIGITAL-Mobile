@@ -1,4 +1,4 @@
-import React,{useRef} from 'react'
+import React,{useRef,useState} from 'react'
 import { View,StyleSheet,Image} from 'react-native';
 import AppButton from './AppButton';
 import AppContainer from './AppContainer';
@@ -9,9 +9,14 @@ import Contacts from 'react-native-contacts';
 import moment from 'moment';
 import ViewShot from "react-native-view-shot";
 import Share from 'react-native-share';
+import { useFocusEffect } from '@react-navigation/native';
+import { apiCall } from '../Services';
+
 
 const ShareImagePreview = ({voterDetails,onCancelClicked}) =>{
     const reff = useRef();
+    const [candidateDetails,setCandidateDetails] = useState(null);
+    const [isLoading,setIsLoading] = useState(false);
 
     const onShareClicked = async()=>{
         if(voterDetails.CONTACTNO){
@@ -19,17 +24,17 @@ const ShareImagePreview = ({voterDetails,onCancelClicked}) =>{
                 const shareOptions = {
                     title: 'Share via',
                     message: `
-candidate name : ${'test name'}
-party_name:${'Test Party'}
-Symbol:${'Test Symbol'} 
+candidate name : ${candidateDetails.candidateName}
+party_name:${'B.J.P'}
+Symbol:${'Lotus'} 
 
---------------Voter Details--------------------------------
+--------------Voter Details--------------
 
-name:${voterDetails.ENG_F_NAME} ${voterDetails.ENG_M_NAME} ${voterDetails.ENG_SURNAME}
-srno:${voterDetails.SL_NO}
-vcardId:${''}
-house no:${voterDetails.HOUSE_NO}
-booth Address:${'Test Address'}`,
+name: ${voterDetails.F_NAME} ${voterDetails.M_NAME} ${voterDetails.RLN_SURNAME}
+srno: ${voterDetails.SL_NO}
+vcardId: ${voterDetails.IDCARD_NO}
+house no: ${voterDetails.HOUSE_NO}
+booth Address: ${candidateDetails?.POLLING_LOCATION}`,
                     url: uri,
                     social: Share.Social.WHATSAPP,
                     whatsAppNumber: `91${voterDetails.CONTACTNO}`,  // country code + phone number
@@ -43,11 +48,34 @@ booth Address:${'Test Address'}`,
         }
     }
 
+    useFocusEffect(
+        React.useCallback(() => {
+            async function getCandidatePhoto(){
+                setIsLoading(true);
+                const candidatePhotoResult = await apiCall("post","getCandidatePhoto",{accountNo:voterDetails.AC_NO,boothNo:voterDetails.BOOTH_NO});
+                console.log(55,candidatePhotoResult);
+                if(candidatePhotoResult.status === 200 && candidatePhotoResult?.data?.length > 0) {
+                    setCandidateDetails({...candidatePhotoResult.data[0]});
+                    setIsLoading(false);
+                }
+                setIsLoading(false);
+            } 
+
+           getCandidatePhoto();
+        },[])
+    )
+
     return (
         <AppContainer style={{...styles.AppContainer,...{justifyContent:'center',alignItems:'center',backgroundColor:null,padding:10}}}>
             <ViewShot ref={reff}  options={{ format: "jpg", quality: 0.9 }} style={styles.ImageContainer}> 
-                <Image source={require('../assets/images/card1.jpeg')} resizeMode='contain' style={styles.Image} />
-                <View style={styles.FirstInfoContainer}>
+                {
+                candidateDetails?.candidatePhoto && candidateDetails?.candidatePhoto.length > 0 ? 
+                    <Image source={{uri:candidateDetails.candidatePhoto}} resizeMode='contain' style={styles.Image} />
+                :null
+                }
+             </ViewShot>
+             <View style={{backgroundColor:'white'}}>
+             <View style={styles.FirstInfoContainer}>
                     <View style={styles.FirstInfo}>
                         <AppTextBold style={{color:'#f39834'}}>AC No : - <AppText>{voterDetails.AC_NO}</AppText></AppTextBold>
                     </View>
@@ -101,7 +129,8 @@ booth Address:${'Test Address'}`,
                         </View>
                     </View>
                 </View>
-            </ViewShot>
+             </View>   
+                
             <View style={{width:'100%',flexDirection:'row',justifyContent:'space-around',marginTop:10}}>
                 <AppButton
                     text={'Share Image'}
@@ -137,7 +166,7 @@ const styles = StyleSheet.create({
     Image:{
         width:'100%',
         borderWidth:1,
-        height:150
+        height:250
     },
     FirstInfoContainer:{
         width:'100%',

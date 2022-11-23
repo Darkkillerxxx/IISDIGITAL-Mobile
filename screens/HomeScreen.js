@@ -23,7 +23,7 @@ const HomeScreen = ({navigation}) => {
                         <TouchableOpacity onPress={()=>navigation.navigate('VoterSummary')}>
                             <AppCard style={styles.ServicesCardsVisit}>
                                 <Image source={require('../assets/images/candidates.png')}/>
-                                <AppText style={styles.ServiceCardsText}>Voters Summary</AppText>    
+                                <AppText style={styles.ServiceCardsText}>Voting Summary</AppText>    
                             </AppCard>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={()=>navigation.navigate('SummaryScreen')}>
