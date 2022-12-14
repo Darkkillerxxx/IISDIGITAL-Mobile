@@ -18,7 +18,7 @@
    ActivityIndicator
  } from 'react-native';
  
- import {apiCall, checkToken, makeDatabaseTransactions} from './Services'
+ import {apiCall, checkToken, makeDatabaseTransactions,fetchAllDataFromTable} from './Services'
  import SplashScreen from './screens/SplashScreen';
  import LoginForm from './screens/LoginForm';
  import OtpScreen from './screens/OtpScreen';
@@ -36,6 +36,8 @@ import AppText from './components/AppText';
    const [showSplashScreen,setShowSplashScreen] = useState(true)
    const [isLoggedIn,setIsLoggedIn] = useState(false);
    const [isSyncing,setIsSyncing] = useState(false);
+   const [totalBooths,setTotalBooths] = useState(0);
+   const [totalBoothsSynced,setTotalBoothSynced] = useState(0);
    const [visitScreenFilter,setVisitScreenFilter] = useState({acNo:null,boothNo:null,vibhagNo:null,houseNo:null,search:null});
    useEffect(()=>{
      console.log(77777777,visitScreenFilter)
@@ -44,9 +46,17 @@ import AppText from './components/AppText';
        setShowSplashScreen(false);
        setIsLoggedIn(isValidToken);
        if(isValidToken){
-        NetInfo.fetch().then((state)=>{
+        NetInfo.fetch().then(async(state)=>{
           if(state.isConnected){
-            syncData();
+            const fetchAllDataFromTableResult = await fetchAllDataFromTable('VoterList');
+            let userData = JSON.parse(await AsyncStorage.getItem('userData'));
+            const numberOfAssignedBooths = userData?.assignedBooths?.length;
+            let numberOfSyncedBooths = await AsyncStorage.getItem('numberOfSyncedBooths');
+            numberOfSyncedBooths = numberOfAssignedBooths ? parseInt(numberOfSyncedBooths) : 0;
+            console.log("numberOfAssignedBooths !== numberOfSyncedBooths",numberOfAssignedBooths,numberOfSyncedBooths);
+            if(fetchAllDataFromTableResult.length === 0 || (numberOfAssignedBooths !== numberOfSyncedBooths)){
+              syncData();
+            }
           }
         })
        }
@@ -55,13 +65,12 @@ import AppText from './components/AppText';
    },[isLoggedIn,visitScreenFilter])
  
    const syncData = async() => {
+    try{
     setIsSyncing(true);
     let userData = await AsyncStorage.getItem('userData');
     userData = JSON.parse(userData);
     console.log(48,userData)
-    let selectedAccNo = userData.accNo;
-
-
+    setTotalBooths(userData?.assignedBooths?.length);
     /******************************************************
       Fetching boothlist against a AccNO
     *********************************************************/
@@ -70,14 +79,17 @@ import AppText from './components/AppText';
       boothNos:userData.assignedBooths
     }
 
+    const voterListPayload = {
+      accNo:userData.accNo,
+      boothNos:userData.assignedBooths
+    }
+
+
     let societylistsArr = []
     
     let votersListArr = []
-    
     let boothListsResponse = await apiCall('post','getBoothListForUsers',boothlistPayload);
-    
     await AsyncStorage.setItem('boothList',JSON.stringify(boothListsResponse.boothList));
-    
     //Temp fix change Later
     boothListsResponse.boothList.forEach((booth,index) => {
       societylistsArr.push({
@@ -91,34 +103,50 @@ import AppText from './components/AppText';
      Fetching Society List against a AccNO,BoothNo AND STCODE
      ********************************************************/
 
-    let societyListsResponse = await apiCall('post','getSocietyList',{values:societylistsArr});
-    // console.log(81,societylistsArr)
-    // console.log(8282,JSON.stringify(societyListsResponse));
-    await AsyncStorage.setItem('societyList',JSON.stringify(societyListsResponse.societyList));
+    // let societyListsResponse = await apiCall('post','getSocietyList',{values:societylistsArr});
+    // // console.log(81,societylistsArr)
+    // // console.log(8282,JSON.stringify(societyListsResponse));
+    // await AsyncStorage.setItem('societyList',JSON.stringify(societyListsResponse.societyList));
 
-    let lastVoterListSync = await AsyncStorage.getItem('lastVoterListSync');
+    // let lastVoterListSync = await AsyncStorage.getItem('lastVoterListSync');
 
-    societyListsResponse.societyList.forEach((society,index) => {
-      votersListArr.push({
-        acNo:society.AC_NO,
-        stCode:society.ST_CODE,
-        boothNo:society.BOOTH_NO
-      })
-    })
+    // societyListsResponse.societyList.forEach((society,index) => {
+    //   votersListArr.push({
+    //     acNo:society.AC_NO,
+    //     stCode:society.ST_CODE,
+    //     boothNo:society.BOOTH_NO
+    //   })
+    // })
 
   
     /********************************************************
      Fetching Voters List against AccNO,BoothNo,STCODE,VibhagNo
      ********************************************************/
-     let votersListResponse = await apiCall('post','getVoterList',{values:votersListArr});
-     
-     console.log(103103,votersListResponse.voterList.length)
-     if(votersListResponse.status === 200){
-      makeDatabaseTransactions('VoterList',votersListResponse.voterList)
+    console.log(117,userData.assignedBooths.length);
+    let numberOfSyncedBooths = await AsyncStorage.getItem('numberOfSyncedBooths');
+    numberOfSyncedBooths = numberOfSyncedBooths ? parseInt(numberOfSyncedBooths) : 0;
+     for(let i = numberOfSyncedBooths ; i < userData.assignedBooths.length ; i++){
       
-      console.log('All Set');
+      const voterPayload = {
+        accNo:userData.accNo,
+        boothNos:userData.assignedBooths[i]
+      }
+
+      let votersListResponse = await apiCall('post','getVoterList',{...voterPayload});
+
+      if(votersListResponse.status === 200){
+        makeDatabaseTransactions('VoterList',votersListResponse.voterList);
+        await AsyncStorage.setItem('numberOfSyncedBooths',(i+1).toString());
+        setTotalBoothSynced(i + 1);
+        console.log('All Set');
+       }
+       setTimeout(()=>{},2000);
      }
-     setIsSyncing(false);     
+     setIsSyncing(false);
+    }
+    catch(e){
+      console.log(e);
+    }     
   }
  
    const onChangeLoginStatus = (status) =>{
@@ -137,7 +165,7 @@ import AppText from './components/AppText';
               {isSyncing ?
               <View style={{width:'100%',height:50,justifyContent:'center',alignItems: 'center',flexDirection:'row',backgroundColor:'orange'}}>
                 <ActivityIndicator size="small" color="white" />
-                <AppText style={{marginLeft:15,color:'white'}}>Syncing Data...</AppText>
+                <AppText style={{marginLeft:15,color:'white'}}>{`Syncing Voters and Booths Data...(${totalBoothsSynced}/${totalBooths})`}</AppText>
               </View>
               :
               null}

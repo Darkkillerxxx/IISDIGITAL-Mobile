@@ -23,6 +23,7 @@ const SummaryPickerData = [
 ]
 
 const VoterSummary = ({navigation}) =>{
+    const [loggedInUserData,setLoggedInUserData] = useState(null);
     const [voterData,setVoterData]=useState(null);
     const [voterDataForBooths,setVoterDataForBooths] = useState([]);
     const [pickerValue,setPickervalue] = useState('AC Wise Voter Summary');
@@ -60,8 +61,10 @@ const VoterSummary = ({navigation}) =>{
         
     }
 
-    const setVoterSummaryDataForSelectedBooth = (voterList,boothNo) =>{
-        const votersData = voterList.find((voterData)=> voterData.BOOTH_NO === boothNo);
+    const setVoterSummaryDataForSelectedBooth = async(voterList,boothNo) =>{
+        const loggedInUserData = JSON.parse(await AsyncStorage.getItem('userData'));
+        const votersData = voterList.find((voterData)=> voterData.BOOTH_NO === boothNo && loggedInUserData.accNo.toString() === voterData.AC_NO.toString());
+        console.log("votersData",votersData);
         setVoterData({...votersData});
     }
 
@@ -73,18 +76,15 @@ const VoterSummary = ({navigation}) =>{
     useFocusEffect(
       
         React.useCallback(() => {
-            async function getUserDetails(){
-                console.log(5757,await AsyncStorage.getItem('userData'))
-            }
-
             async function fetchAccountVoterSummary(){
+                const loggedInUserData = JSON.parse(await AsyncStorage.getItem('userData'));
                 const accountVoterSummary = await apiCall("post","getVoterSummary",{type:1});
-                if(accountVoterSummary.status === 200){
-                    setVoterData(accountVoterSummary.voterList[0]);
+                if(accountVoterSummary.status === 200 && accountVoterSummary.voterList.length > 0){
+                    const voterDataForAssignAccount = accountVoterSummary.voterList.find((voterSummary) => voterSummary.AC_NO.toString() === loggedInUserData.accNo.toString()); 
+                    console.log("voterDataForAssignAccount",voterDataForAssignAccount);
+                    setVoterData({...voterDataForAssignAccount});
                 }
             }
-
-            getUserDetails();
             fetchAccountVoterSummary();
         }, [])
     );

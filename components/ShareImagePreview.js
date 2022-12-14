@@ -19,22 +19,23 @@ const ShareImagePreview = ({voterDetails,onCancelClicked}) =>{
     const [isLoading,setIsLoading] = useState(false);
 
     const onShareClicked = async()=>{
-        if(voterDetails.CONTACTNO){
             reff.current.capture().then((uri)=>{
                 const shareOptions = {
                     title: 'Share via',
                     message: `
-candidate name : ${candidateDetails.candidateName}
-party_name:${'B.J.P'}
-Symbol:${'Lotus'} 
+ઉમેદવાર નું નામ: ${candidateDetails.CandidateName ? candidateDetails.CandidateName : candidateDetails.candidateName }
+પાર્ટી નું નામ :${'ભાજપ'}
+ઉમેદવાર નો ક્રમાંક:${candidateDetails.slNo}
+નિશાન :${'કમળ'} 
 
 --------------Voter Details--------------
 
-name: ${voterDetails.F_NAME} ${voterDetails.M_NAME} ${voterDetails.RLN_SURNAME}
-srno: ${voterDetails.SL_NO}
-vcardId: ${voterDetails.IDCARD_NO}
-house no: ${voterDetails.HOUSE_NO}
-booth Address: ${candidateDetails?.POLLING_LOCATION}`,
+નામ : ${voterDetails.F_NAME} ${voterDetails.M_NAME} ${voterDetails.SURNAME}
+Booth No:${voterDetails.BOOTH_NO}
+ક્રમાંક : ${voterDetails.SL_NO}
+ઓળખપત્ર : ${voterDetails.IDCARD_NO}
+સરનામું : ${voterDetails.HOUSE_NO} ${candidateDetails.LOCALITYID} ${candidateDetails.PINCODE} 
+મતદાન મથક : ${candidateDetails?.POLLING_LOCATION}`,
                     url: uri,
                     social: Share.Social.WHATSAPP,
                     whatsAppNumber: `91${voterDetails.CONTACTNO}`,  // country code + phone number
@@ -44,16 +45,15 @@ booth Address: ${candidateDetails?.POLLING_LOCATION}`,
                   Share.shareSingle(shareOptions)
                     .then((res) => { console.log(res) })
                     .catch((err) => { err && console.log(err); });
-            })
-        }
+            }).catch(err=>{ console.log(err)})
     }
 
     useFocusEffect(
         React.useCallback(() => {
             async function getCandidatePhoto(){
                 setIsLoading(true);
-                const candidatePhotoResult = await apiCall("post","getCandidatePhoto",{accountNo:voterDetails.AC_NO,boothNo:voterDetails.BOOTH_NO});
-                console.log(55,candidatePhotoResult);
+                const candidatePhotoResult = await apiCall("post","getCandidatePhoto",{accountNo:voterDetails.AC_NO,boothNo:voterDetails.BOOTH_NO,vibhagNo:voterDetails.VIBHAG_NO});
+                console.log("candidatePhotoResult",candidatePhotoResult);
                 if(candidatePhotoResult.status === 200 && candidatePhotoResult?.data?.length > 0) {
                     setCandidateDetails({...candidatePhotoResult.data[0]});
                     setIsLoading(false);

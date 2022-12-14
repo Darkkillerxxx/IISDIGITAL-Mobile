@@ -64,7 +64,7 @@ const VoterList = ({route,navigation}) =>{
                 SL_NO:voter.SL_NO,
                 VIBHAG_NO:voter.VIBHAG_NO,
                 VIBHAG_NAME:voter.VIBHAG_NAME,
-                MOBILE_NO:voter.MOBILE_NO
+                MOBILE_NO:voter.CONTACTNO
             })
         })
     

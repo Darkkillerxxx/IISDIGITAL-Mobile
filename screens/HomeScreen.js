@@ -8,97 +8,44 @@ import AppTextBold from "../components/AppTextBold";
 
 const HomeScreen = ({navigation}) => {
     return(
-        <AppContainer>
-            <ScrollView>
+        <AppContainer style={{padding:10}}>
+            <AppTextBold style={styles.ServiceContainerBoldText}>Services Categories</AppTextBold>
             <View style={styles.ServicesContainer}>
-                <AppTextBold style={styles.ServiceContainerBoldText}>Services Categories</AppTextBold>
-                <View style={styles.ServicesContainerCardContainer}>
-                    <ScrollView horizontal={true}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('SearchVoterScreen')}>
-                            <AppCard style={{...styles.ServicesCardsSummary,...{backgroundColor:'#fa8072'}}}>
-                                <Image source={require('../assets/images/search.png')}/>
-                                <AppText style={styles.ServiceCardsText}>Search</AppText>    
-                            </AppCard>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('VoterSummary')}>
-                            <AppCard style={styles.ServicesCardsVisit}>
-                                <Image source={require('../assets/images/candidates.png')}/>
-                                <AppText style={styles.ServiceCardsText}>Voting Summary</AppText>    
-                            </AppCard>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('SummaryScreen')}>
-                            <AppCard style={styles.ServicesCardsSummary}>
-                                <Image source={require('../assets/images/summaryIcon.png')}/>
-                                <AppText style={styles.ServiceCardsText}>Summary</AppText>    
-                            </AppCard>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('VisitScreen')}>
-                            <AppCard style={styles.ServicesCardsVisit}>
-                                <Image source={require('../assets/images/visitIcon.png')}/>
-                                <AppText style={styles.ServiceCardsText}>Visits</AppText>    
-                            </AppCard>
-                        </TouchableOpacity>
-                    </ScrollView>
+                <View style={{width:'48%'}}>
+                    <TouchableOpacity style={{width:'100%'}} onPress={()=>navigation.navigate('SearchVoterScreen')}>
+                        <AppCard style={{...styles.ServicesCardsSummary,...{backgroundColor:'#fa8072'}}}>
+                            <Image source={require('../assets/images/search.png')}/>
+                            <AppText style={styles.ServiceCardsText}>Search</AppText>    
+                        </AppCard>
+                    </TouchableOpacity>
+                </View>
+                <View style={{width:'48%'}}>
+                    <TouchableOpacity style={{width:'100%'}} onPress={()=>navigation.navigate('VoterSummary')}>
+                        <AppCard style={styles.ServicesCardsVisit}>
+                            <Image source={require('../assets/images/candidates.png')}/>
+                            <AppText style={styles.ServiceCardsText}>Voting Summary</AppText> 
+                        </AppCard>
+                    </TouchableOpacity>
                 </View>
             </View>
-            <View style={{width:'100%',padding:5,paddingLeft:15}}>
-                <AppTextBold style={styles.ServiceContainerBoldText}>Top Videos</AppTextBold>
-                <ScrollView horizontal={true}>
-                    <AppCard style={styles.AppCard}>
-                        <View style={{height:120,width:'100%'}}>
-                            <Image source={require('../assets/images/mann.jpg')} style={{width:250,height:'100%'}}/>
-                            <AppText style={{padding:5}}>
-                                Share your idea's and suggestions for PM's upcomming Mann Ki Baat...
-                            </AppText>
-                        </View>
-                    </AppCard>
-                    <AppCard style={styles.AppCard}>
-                        <View style={{height:120,width:'100%',alignItems:'center'}}>
-                            <Image source={require('../assets/images/ppc.jpg')} style={{width:250,height:'100%'}}/>
-                            <AppText style={{padding:5}}>
-                                PM invites Participation for 'Pariksha par Charcha 2022'
-                            </AppText>
-                        </View>
-                    </AppCard>
-                    <AppCard style={styles.AppCard}>
-                        <View style={{height:120,width:'100%',alignItems:'center'}}>
-                            <Image source={require('../assets/images/merch.jpg')} style={{width:250,height:'100%'}}/>
-                            <AppText style={{padding:5}}>
-                                Get the latest Merchandise is here !!!!
-                            </AppText>
-                        </View>
-                    </AppCard>
-                   
-                </ScrollView>
+            <View style={styles.ServicesContainer}>
+                <View style={{width:'48%'}}>
+                    <TouchableOpacity style={{width:'100%'}} onPress={()=>navigation.navigate('SummaryScreen')}>
+                        <AppCard style={styles.ServicesCardsSummary}>
+                            <Image source={require('../assets/images/summaryIcon.png')}/>
+                            <AppText style={styles.ServiceCardsText}>Summary</AppText>    
+                        </AppCard>
+                    </TouchableOpacity>
+                </View>
+                <View style={{width:'48%'}}>
+                    <TouchableOpacity style={{width:'100%'}} onPress={()=>navigation.navigate('VisitScreen')}>
+                        <AppCard style={{...styles.ServicesCardsVisit,...{backgroundColor:'#ff6961'}}}>
+                            <Image source={require('../assets/images/visitIcon.png')}/>
+                            <AppText style={styles.ServiceCardsText}>Visits</AppText>    
+                        </AppCard>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            <View style={{width:'100%',padding:5,paddingLeft:15}}>
-                <View style={{width:'100%',paddingRight:15}}>
-                <AppTextBold style={styles.ServiceContainerBoldText}>Top News</AppTextBold>
-                    <AppCard style={{...styles.AppCard,...{width:'100%',flexDirection:'column',height:500,justifyContent:'flex-start'}}}>
-                        <View style={{padding:10}}>
-                            <AppTextBold>PM extends best wishes to Barack Obama for quick recovery from COVID-19</AppTextBold>
-                        </View>
-                        <Image source={require('../assets/images/obama.jpg')} style={{width:'100%',height:'70%'}}/>
-                        <View style={{padding:10}}>
-                            <AppText>The Prime Minister,Shri Narendra Modi has extended his best wishes to former US President, barack Obama for his quick recovery from COVID-19</AppText>
-                        </View>
-                    </AppCard>
-                </View>
-
-                <View style={{width:'100%',paddingRight:15}}>
-                    <AppCard style={{...styles.AppCard,...{width:'100%',flexDirection:'column',height:500,justifyContent:'flex-start'}}}>
-                        <View style={{padding:10}}>
-                            <AppTextBold>PM Modi chairs CCS meeting, seeks integrating latest technology in security apparatus</AppTextBold>
-                        </View>
-                        <Image source={require('../assets/images/ccs.jpg')} style={{width:'100%',height:'70%'}}/>
-                        <View style={{padding:10}}>
-                            <AppText>Prime Minister Narendra Modi on Sunday chaired a meeting of the Cabinet Committee on Security (CCS) to review India's security preparedness ....</AppText>
-                        </View>
-                    </AppCard>
-                </View>
-            </View> 
-            </ScrollView>
         </AppContainer>
     )
 }
@@ -116,31 +63,29 @@ const styles = StyleSheet.create({
     },
     ServicesContainer:{
         width:'100%',
-        height:175,
-        paddingTop:15,
-        paddingLeft:15
+        flexDirection:'row',
+        justifyContent: 'space-around'
     },
     ServiceContainerBoldText:{
         fontSize:15
     },
     ServicesContainerCardContainer:{
-        width:'100%',
-        flexDirection:'row'
+        width:'100%'
     },
     ServicesCardsVisit:{
-        width:120,
+        width:'100%',
         backgroundColor:'#8ecae6',
         borderRadius:5,
-        height:120,
+        height:160,
         margin:10,
         marginLeft:1,
         alignItems:'center'
     },
     ServicesCardsSummary:{
-        width:120,
+        width:'100%',
         backgroundColor:'#A0E8AF',
         borderRadius:5,
-        height:120,
+        height:160,
         margin:10,
         marginLeft:1,
         alignItems:'center'
@@ -154,3 +99,37 @@ const styles = StyleSheet.create({
 
 
 export default HomeScreen;
+
+// <View style={styles.ServicesContainer}>
+// <AppTextBold style={styles.ServiceContainerBoldText}>Services Categories</AppTextBold>
+// <View style={styles.ServicesContainerCardContainer}>
+//     <View style={{...styles.ServicesContainerCardContainer,...{flexDirection:'row',borderWidth:1}}}>
+//         <TouchableOpacity style={{width:'50%'}} onPress={()=>navigation.navigate('SearchVoterScreen')}>
+//             <AppCard style={{...styles.ServicesCardsSummary,...{backgroundColor:'#fa8072'}}}>
+//                 <Image source={require('../assets/images/search.png')}/>
+//                 <AppText style={styles.ServiceCardsText}>Search</AppText>    
+//             </AppCard>
+//         </TouchableOpacity>
+//         <TouchableOpacity onPress={()=>navigation.navigate('VoterSummary')}>
+//             <AppCard style={styles.ServicesCardsVisit}>
+//                 <Image source={require('../assets/images/candidates.png')}/>
+//                 <AppText style={styles.ServiceCardsText}>Voting Summary</AppText>    
+//             </AppCard>
+//         </TouchableOpacity>
+//     </View>
+        
+//         <TouchableOpacity onPress={()=>navigation.navigate('SummaryScreen')}>
+//             <AppCard style={styles.ServicesCardsSummary}>
+//                 <Image source={require('../assets/images/summaryIcon.png')}/>
+//                 <AppText style={styles.ServiceCardsText}>Summary</AppText>    
+//             </AppCard>
+//         </TouchableOpacity>
+//         <TouchableOpacity onPress={()=>navigation.navigate('VisitScreen')}>
+//             <AppCard style={styles.ServicesCardsVisit}>
+//                 <Image source={require('../assets/images/visitIcon.png')}/>
+//                 <AppText style={styles.ServiceCardsText}>Visits</AppText>    
+//             </AppCard>
+//         </TouchableOpacity>
+   
+// </View>
+// </View>
